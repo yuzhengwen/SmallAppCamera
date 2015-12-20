@@ -36,6 +36,8 @@ public class SmallAppMain extends SmallApplication implements OnClickListener {
 		attr.height = getResources().getDimensionPixelSize(R.dimen.height);
 		attr.minWidth = getResources().getDimensionPixelSize(R.dimen.width);
 		attr.minHeight = getResources().getDimensionPixelSize(R.dimen.height);
+		attr.maxWidth = getResources().getDimensionPixelSize(R.dimen.width);
+		attr.maxHeight = getResources().getDimensionPixelSize(R.dimen.height);
 		attr.flags |= SmallAppWindow.Attributes.FLAG_NO_TITLEBAR;
 
 		getWindow().setAttributes(attr);
@@ -78,6 +80,7 @@ public class SmallAppMain extends SmallApplication implements OnClickListener {
 		return c;
 	}
 
+	/** Camera take picture method and save to internal sd */
 	private void takePicture() {
 		camera.takePicture(null, null, new PictureCallback() {
 
