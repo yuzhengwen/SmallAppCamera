@@ -1,0 +1,12 @@
+V0.8 BETA
+- Added option to switch to front camera
+
+V0.7 BETA
+- Added video recording
+
+V0.6 BETA
+- Added autofocus
+- Rotation enabled
+
+V0.5 BETA
+- Added basic camera functionality

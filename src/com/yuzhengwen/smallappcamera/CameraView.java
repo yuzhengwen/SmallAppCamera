@@ -1,5 +1,7 @@
 package com.yuzhengwen.smallappcamera;
 
+import java.io.IOException;
+
 import android.content.Context;
 import android.hardware.Camera;
 import android.util.Log;
@@ -11,39 +13,16 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
 	private Camera camera;
 	private SurfaceHolder holder;
 	public static String TAG = "MyApp";
+	private Context context;
 
 	public CameraView(Context context, Camera c) {
 		super(context);
+		this.context = context;
 		this.camera = c;
 		// Install a SurfaceHolder.Callback so we get notified when the
 		// underlying surface is created and destroyed.
 		holder = getHolder();
 		holder.addCallback(this);
-	}
-
-	@Override
-	public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-		/*
-		 * 
-		 * // If your preview can change or rotate, take care of those events
-		 * here. // Make sure to stop the preview before resizing or
-		 * reformatting it. if (holder.getSurface() == null) // preview surface
-		 * does not exist return;
-		 * 
-		 * // stop preview before making changes try { camera.stopPreview(); }
-		 * catch (Exception e) { // ignore: tried to stop a non-existent preview
-		 * }
-		 * 
-		 * // set preview size and make any resize, rotate or // reformatting
-		 * changes here
-		 * 
-		 * // start preview with new settings try {
-		 * camera.setPreviewDisplay(holder); camera.startPreview();
-		 * 
-		 * } catch (Exception e) { Log.d(TAG, "Error starting camera preview: "
-		 * + e.getMessage()); }
-		 * 
-		 */
 	}
 
 	@Override
@@ -53,9 +32,45 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
 		try {
 			camera.setPreviewDisplay(holder);
 			camera.startPreview();
+			Camera.Parameters params = camera.getParameters();
+			SmallAppMain s = (SmallAppMain) context;
+			params.setPreviewSize(s.width, s.height);
+			camera.setParameters(params);
 			Log.d(TAG, "STARTING PREVIEW");
 		} catch (Exception e) {
 			Log.d(TAG, "Error setting camera preview: " + e.getMessage());
+		}
+	}
+
+	@Override
+	public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+		if (holder.getSurface() == null)
+			return;
+
+		// stop preview before making changes
+		try {
+			camera.stopPreview();
+		} catch (Exception e) {
+			Log.d(TAG, e.getMessage());
+		}
+
+		int cameraId = SmallAppMain.cameraId;
+		int displayOrientation = Functions.getCameraDisplayOrientation(getResources().getConfiguration(), cameraId);
+		camera.setDisplayOrientation(displayOrientation);
+		// Camera.Parameters params = camera.getParameters();
+		// params.setPreviewSize(SmallAppMain.width, SmallAppMain.height);
+		// camera.setParameters(params);
+
+		// restart preview
+		try {
+			camera.setPreviewDisplay(holder);
+			camera.startPreview();
+			
+			Camera.Parameters params = camera.getParameters();
+			params.setPreviewSize(width, height);
+			camera.setParameters(params);
+		} catch (Exception e) {
+			Log.d(TAG, "Error starting camera preview: " + e.getMessage());
 		}
 	}
 
@@ -66,6 +81,21 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
 			camera.stopPreview();
 			camera.setPreviewCallback(null);
 		}
+	}
 
+	public void toggleCamera(int cameraId) {
+		camera.stopPreview();
+		camera.release();
+		camera = Functions.getCameraInstance(cameraId);
+		try {
+			camera.setPreviewDisplay(holder);
+		} catch (IOException e) {
+			Log.d(TAG, "Error setting camera preview: " + e.getMessage());
+		}
+
+		int displayOrientation = Functions.getCameraDisplayOrientation(getResources().getConfiguration(), cameraId);
+		camera.setDisplayOrientation(displayOrientation);
+
+		camera.startPreview();
 	}
 }

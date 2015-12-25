@@ -1,5 +1,7 @@
 <resources>
 
     <string name="app_name">SmallAppCamera</string>
+    <string name="toggle_back_cam">Toggle Back Cam</string>
+    <string name="toggle_front_cam">Toggle Front Cam</string>
 
 </resources>

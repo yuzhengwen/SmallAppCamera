@@ -8,6 +8,16 @@
         android:id="@+id/camera_preview"
         android:layout_width="fill_parent"
         android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:layout_weight="1" >
+
+        <ToggleButton
+            android:id="@+id/toggleCamera"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Toggle Camera"
+            android:textOff="@string/toggle_front_cam"
+            android:textOn="@string/toggle_back_cam" />
+
+    </FrameLayout>
 
 </LinearLayout>
